@@ -11,8 +11,11 @@ form.addEventListener("submit", (e) => {
     .post("http://localhost:3000/user/sign-up", obj)
     .then((data) => {
       console.log(data);
+      e.target.name.value="";
+      e.target.mail.value="";
+      e.target.password.value="";
     })
     .catch((e) => {
-      console.log(e);
+      alert("SignUp Failed!")
     });
 });
