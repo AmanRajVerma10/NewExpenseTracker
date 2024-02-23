@@ -9,13 +9,13 @@ form.addEventListener("submit", (e) => {
   console.log(obj);
   axios
     .post("http://localhost:3000/user/sign-up", obj)
-    .then((data) => {
-      console.log(data);
+    .then((response) => {
+      alert(response.data.message);
       e.target.name.value="";
       e.target.mail.value="";
       e.target.password.value="";
     })
     .catch((e) => {
-      alert("SignUp Failed!")
+      document.body.innerHTML+=`<div style="color:red">${e}</div>`;
     });
 });
