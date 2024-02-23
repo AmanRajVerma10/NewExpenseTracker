@@ -13,6 +13,7 @@ document
       );
       if (response.status === 200) {
         alert(response.data.message);
+        localStorage.setItem('token',response.data.token);
         window.location.replace("./expenseTracker.html");
       } else {
         throw new Error(response.data.message);
