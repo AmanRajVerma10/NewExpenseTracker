@@ -2,6 +2,10 @@ const form = document.getElementById("myform");
 
 window.addEventListener("DOMContentLoaded", () => {
   const token = localStorage.getItem("token");
+  const premiumUser= localStorage.getItem("isPremium");
+  if(premiumUser==='yes'){
+    document.getElementById('premium').innerHTML="You are a premium user!"
+  }
   axios
     .get("http://localhost:3000/expense/get-expense", { headers: { "Authorization": token } })
     .then((exp) => {
@@ -48,6 +52,7 @@ document.getElementById('rzp-button1').onclick=async function(e){
 
       alert("You are a premium user now!")
       document.getElementById('premium').textContent="You are a premium user!"
+      localStorage.setItem('isPremium',"yes");
     }
   }
   const rzp1= new Razorpay(options);
