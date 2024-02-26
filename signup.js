@@ -14,6 +14,7 @@ form.addEventListener("submit", (e) => {
       e.target.name.value="";
       e.target.mail.value="";
       e.target.password.value="";
+      window.location.replace('./login.html')
     })
     .catch((e) => {
       document.body.innerHTML+=`<div style="color:red">${e}</div>`;
