@@ -22,3 +22,7 @@ document
       document.body.innerHTML += `<div style="color:red">${error}</div>`;
     }
   });
+
+  document.getElementById('forgotPassword').onclick= async function(){
+    window.location.replace('./forgotPassword.html');
+  }
