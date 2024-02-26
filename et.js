@@ -47,6 +47,7 @@ document.getElementById('rzp-button1').onclick=async function(e){
       },{headers:{"Authorization":token}})
 
       alert("You are a premium user now!")
+      document.getElementById('premium').textContent="You are a premium user!"
     }
   }
   const rzp1= new Razorpay(options);
