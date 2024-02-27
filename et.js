@@ -1,4 +1,5 @@
 const form = document.getElementById("myform");
+const token = localStorage.getItem("token");
 
 function parseJwt(token) {
   var base64Url = token.split(".")[1];
@@ -26,24 +27,21 @@ function showLeaderboard() {
   inputElement.type = "button";
   inputElement.value = "Show Leaderboard";
   inputElement.onclick = async () => {
-    const token = localStorage.getItem("token");
     const userLeaderBoardArray = await axios.get(
       "http://localhost:3000/premium/getleaderboard",
       { headers: { Authorization: token } }
     );
     console.log(userLeaderBoardArray);
-    const leaderboardElements= document.getElementById('leaders');
-    leaderboardElements.innerHTML=`<h2>Leaderboard</h2>`
-    userLeaderBoardArray.data.arr.forEach(element => {
-      leaderboardElements.innerHTML+=`<li>name: ${element.name} expense: ${element.totalexpense}</li>`
-      
+    const leaderboardElements = document.getElementById("leaders");
+    leaderboardElements.innerHTML = `<h2>Leaderboard</h2>`;
+    userLeaderBoardArray.data.arr.forEach((element) => {
+      leaderboardElements.innerHTML += `<li>name: ${element.name} expense: ${element.totalexpense}</li>`;
     });
   };
   document.getElementById("message").appendChild(inputElement);
 }
 
 window.addEventListener("DOMContentLoaded", () => {
-  const token = localStorage.getItem("token");
   const decodedToken = parseJwt(token);
   if (decodedToken.ispremiumuser) {
     showPremiumUserMessage();
@@ -66,7 +64,6 @@ window.addEventListener("DOMContentLoaded", () => {
 
 form.addEventListener("submit", (event) => {
   event.preventDefault();
-  const token = localStorage.getItem("token");
   const expense = event.target.exp.value;
   const description = event.target.des.value;
   const category = event.target.cat.value;
@@ -84,7 +81,6 @@ form.addEventListener("submit", (event) => {
 });
 
 document.getElementById("rzp-button1").onclick = async function (e) {
-  const token = localStorage.getItem("token");
   const response = await axios.get(
     "http://localhost:3000/purchase/premiummembership",
     { headers: { Authorization: token } }
@@ -126,15 +122,32 @@ function display(exp) {
   parentElement.innerHTML += childHtml;
 }
 
-function deleteUser(expenseId,amount) {
-  const token = localStorage.getItem("token");
+function deleteUser(expenseId, amount) {
   const pe = document.getElementById("items");
   const ce = document.getElementById(expenseId);
   pe.removeChild(ce);
   axios
     .delete(`http://localhost:3000/expense/delete-expense/${expenseId}`, {
-      headers: { Authorization: token, price:amount },
+      headers: { Authorization: token, price: amount },
     })
     .then(() => console.log("expense deleted"))
+    .catch((e) => console.log(e));
+}
+
+function download() {
+  axios
+    .get("http://localhost:3000/user/download", {
+      Header: { Authorization: token },
+    })
+    .then((response) => {
+      if (response.status === 201) {
+        var a = document.createElement("a");
+        a.href = response.data.fileUrl;
+        a.download = "myexpense.csv";
+        a.click();
+      } else {
+        throw new Error(response.data.message);
+      }
+    })
     .catch((e) => console.log(e));
 }
