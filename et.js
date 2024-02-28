@@ -60,7 +60,27 @@ window.addEventListener("DOMContentLoaded", () => {
     .catch((e) => {
       console.log(e);
     });
+
+    axios.get("http://localhost:3000/user/filesdownloaded",{
+      headers:{'Authorization':token}
+    })
+    .then((response)=>{
+      document.getElementById('files').innerHTML=`<h2>Old Files</h2>`
+      console.log(response.data.files);
+      response.data.files.forEach(file=>{
+        displayFiles(file)
+      })
+    })
+    .catch(e=>{console.log(e)})
+
 });
+
+function displayFiles(file){
+const parentElement= document.getElementById('files');
+let childHtml = `<li id=${file.id}><a href="${file.fileurl}">${file.createdAt}</a></li>`;
+parentElement.innerHTML+=childHtml;
+
+}
 
 form.addEventListener("submit", (event) => {
   event.preventDefault();
@@ -146,7 +166,7 @@ function download() {
         a.download = "myexpense.csv";
         a.click();
       } else {
-        throw new Error(response.data.message);
+        throw new Error(response.data.error);
       }
     })
     .catch((e) => console.log(e));
