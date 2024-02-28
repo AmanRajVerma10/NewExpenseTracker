@@ -61,25 +61,28 @@ window.addEventListener("DOMContentLoaded", () => {
       console.log(e);
     });
 
-    axios.get("http://localhost:3000/user/filesdownloaded",{
-      headers:{'Authorization':token}
+  axios
+    .get("http://localhost:3000/user/filesdownloaded", {
+      headers: { Authorization: token },
     })
-    .then((response)=>{
-      document.getElementById('files').innerHTML=`<h2>Old Files</h2>`
-      console.log(response.data.files);
-      response.data.files.forEach(file=>{
-        displayFiles(file)
-      })
+    .then((response) => {
+      if (response.data.files.length>0) {
+        document.getElementById("files").innerHTML = `<h2>Old Files</h2>`;
+        console.log(response.data.files);
+        response.data.files.forEach((file) => {
+          displayFiles(file);
+        });
+      }
     })
-    .catch(e=>{console.log(e)})
-
+    .catch((e) => {
+      console.log(e);
+    });
 });
 
-function displayFiles(file){
-const parentElement= document.getElementById('files');
-let childHtml = `<li id=${file.id}><a href="${file.fileurl}">${file.createdAt}</a></li>`;
-parentElement.innerHTML+=childHtml;
-
+function displayFiles(file) {
+  const parentElement = document.getElementById("files");
+  let childHtml = `<li id=${file.id}><a href="${file.fileurl}">${file.createdAt}</a></li>`;
+  parentElement.innerHTML += childHtml;
 }
 
 form.addEventListener("submit", (event) => {
