@@ -137,12 +137,12 @@ function deleteUser(expenseId, amount) {
 function download() {
   axios
     .get("http://localhost:3000/user/download", {
-      Header: { Authorization: token },
+      headers: { Authorization: token },
     })
     .then((response) => {
       if (response.status === 201) {
         var a = document.createElement("a");
-        a.href = response.data.fileUrl;
+        a.href = response.data.fileURL;
         a.download = "myexpense.csv";
         a.click();
       } else {
