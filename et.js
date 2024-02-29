@@ -41,7 +41,14 @@ function showLeaderboard() {
   document.getElementById("message").appendChild(inputElement);
 }
 
-window.addEventListener("DOMContentLoaded", () => {
+document.getElementById('rowsForm').addEventListener('submit',(e)=>{
+  e.preventDefault();
+  localStorage.setItem('rows',e.target.rows.value);
+  document.getElementById('items').innerHTML="";
+  refreshPage();
+})
+
+window.addEventListener("DOMContentLoaded", refreshPage=() => {
   const page = 1;
   const decodedToken = parseJwt(token);
   if (!decodedToken.totalexpense) {
@@ -87,8 +94,12 @@ window.addEventListener("DOMContentLoaded", () => {
 });
 
 function getExpenses(page) {
+  let rows=localStorage.getItem('rows');
+  if(!rows){
+    rows=2;
+  }
   axios
-    .get(`http://localhost:3000/expense/get-expense/${page}`, {
+    .get(`http://localhost:3000/expense/get-expense/${page}?rows=${rows}`, {
       headers: { Authorization: token },
     })
     .then((response) => {
