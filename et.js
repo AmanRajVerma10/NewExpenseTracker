@@ -42,31 +42,38 @@ function showLeaderboard() {
 }
 
 window.addEventListener("DOMContentLoaded", () => {
+  const page = 1;
   const decodedToken = parseJwt(token);
+  if (!decodedToken.totalexpense) {
+    document.getElementById("downloadexpense").style.visibility = "hidden";
+  }
   if (decodedToken.ispremiumuser) {
     showPremiumUserMessage();
     showLeaderboard();
   }
+  console.log(decodedToken);
 
-  axios
-    .get("http://localhost:3000/expense/get-expense", {
-      headers: { Authorization: token },
-    })
-    .then((exp) => {
-      exp.data.expenses.map((expense) => {
-        display(expense);
-      });
-    })
-    .catch((e) => {
-      console.log(e);
-    });
+  getExpenses(page);
+
+  // axios
+  //   .get("http://localhost:3000/expense/get-expense", {
+  //     headers: { Authorization: token },
+  //   })
+  //   .then((exp) => {
+  //     exp.data.expenses.map((expense) => {
+  //       display(expense);
+  //     });
+  //   })
+  //   .catch((e) => {
+  //     console.log(e);
+  //   });
 
   axios
     .get("http://localhost:3000/user/filesdownloaded", {
       headers: { Authorization: token },
     })
     .then((response) => {
-      if (response.data.files.length>0) {
+      if (response.data.files.length > 0) {
         document.getElementById("files").innerHTML = `<h2>Old Files</h2>`;
         console.log(response.data.files);
         response.data.files.forEach((file) => {
@@ -78,6 +85,59 @@ window.addEventListener("DOMContentLoaded", () => {
       console.log(e);
     });
 });
+
+function getExpenses(page) {
+  axios
+    .get(`http://localhost:3000/expense/get-expense/${page}`, {
+      headers: { Authorization: token },
+    })
+    .then((response) => {
+      response.data.expenses.map((expense) => {
+        display(expense);
+      })
+      showPagination(response.data);
+    })
+    .catch((e) => {
+      console.log(e);
+    });
+}
+
+function showPagination({
+  currentPage,
+  hasNextPage,
+  nextPage,
+  hasPreviousPage,
+  previousPage,
+  lastPage,
+}) {
+  const pagination=document.getElementById('footer')
+  pagination.innerHTML="";
+  if(hasPreviousPage){
+    const btn2=document.createElement('button');
+    btn2.innerHTML=previousPage;
+    btn2.addEventListener('click',()=>{
+      document.getElementById('items').innerHTML=""
+      getExpenses(previousPage)});
+    pagination.appendChild(btn2);
+  }
+  const btn1=document.createElement('button');
+    btn1.innerHTML=currentPage;
+    btn1.addEventListener('click',()=>{
+      document.getElementById('items').innerHTML=""
+      getExpenses(currentPage)});
+    pagination.appendChild(btn1);
+  
+
+  if(hasNextPage){
+  const btn3= document.createElement('button');
+  btn3.innerHTML=nextPage;
+  btn3.addEventListener('click',()=>{
+    document.getElementById('items').innerHTML=""
+    getExpenses(nextPage)});
+  pagination.appendChild(btn3)
+}
+
+}
 
 function displayFiles(file) {
   const parentElement = document.getElementById("files");
